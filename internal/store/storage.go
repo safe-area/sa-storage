@@ -15,6 +15,13 @@ const (
 )
 
 type Storage interface {
+	Init() error
+	GetLast(indexes []h3.H3Index) map[h3.H3Index]models.HexData
+	GetWithTimestamp(indexes []h3.H3Index, ts int64) map[h3.H3Index]models.HexData
+	IncInfected(index h3.H3Index, ts int64) error
+	DecInfected(index h3.H3Index, ts int64) error
+	IncHealthy(index h3.H3Index, ts int64) error
+	DecHealthy(index h3.H3Index, ts int64) error
 }
 
 func New(cfg *config.StorageConfig) Storage {
