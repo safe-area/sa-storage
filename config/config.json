@@ -1,0 +1,6 @@
+{
+  "storage": {
+    "ttl": 7,
+    "dir": "hex_data"
+  }
+}
