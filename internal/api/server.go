@@ -87,28 +87,28 @@ func (s *Server) PutHandler(ctx *fasthttp.RequestCtx, ps fasthttprouter.Params) 
 	}
 	switch {
 	case req.Action == models.IncInfected:
-		err = s.svc.IncInfected(req.Action, req.Timestamp)
+		err = s.svc.IncInfected(req.Index, req.Timestamp)
 		if err != nil {
 			logrus.Errorf("PutHandler: IncInfected error: %s", err)
 			ctx.SetStatusCode(fasthttp.StatusBadRequest)
 			return
 		}
 	case req.Action == models.DecInfected:
-		err = s.svc.DecInfected(req.Action, req.Timestamp)
+		err = s.svc.DecInfected(req.Index, req.Timestamp)
 		if err != nil {
 			logrus.Errorf("PutHandler: DecInfected error: %s", err)
 			ctx.SetStatusCode(fasthttp.StatusBadRequest)
 			return
 		}
 	case req.Action == models.IncHealthy:
-		err = s.svc.IncHealthy(req.Action, req.Timestamp)
+		err = s.svc.IncHealthy(req.Index, req.Timestamp)
 		if err != nil {
 			logrus.Errorf("PutHandler: IncHealthy error: %s", err)
 			ctx.SetStatusCode(fasthttp.StatusBadRequest)
 			return
 		}
 	case req.Action == models.DecHealthy:
-		err = s.svc.DecHealthy(req.Action, req.Timestamp)
+		err = s.svc.DecHealthy(req.Index, req.Timestamp)
 		if err != nil {
 			logrus.Errorf("PutHandler: DecHealthy error: %s", err)
 			ctx.SetStatusCode(fasthttp.StatusBadRequest)
