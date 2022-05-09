@@ -78,46 +78,48 @@ func (s *Server) GetHandler(ctx *fasthttp.RequestCtx, ps fasthttprouter.Params) 
 
 func (s *Server) PutHandler(ctx *fasthttp.RequestCtx, ps fasthttprouter.Params) {
 	body := ctx.PostBody()
-	var req models.PutRequest
-	err := jsoniter.Unmarshal(body, &req)
+	var reqs []models.PutRequest
+	err := jsoniter.Unmarshal(body, &reqs)
 	if err != nil {
 		logrus.Errorf("PutHandler: error while unmarshalling request: %s", err)
 		ctx.SetStatusCode(fasthttp.StatusBadRequest)
 		return
 	}
-	switch {
-	case req.Action == models.IncInfected:
-		err = s.svc.IncInfected(req.Index, req.Timestamp)
-		if err != nil {
-			logrus.Errorf("PutHandler: IncInfected error: %s", err)
+	for _, req := range reqs {
+		switch {
+		case req.Action == models.IncInfected:
+			err = s.svc.IncInfected(req.Index, req.Timestamp)
+			if err != nil {
+				logrus.Errorf("PutHandler: IncInfected error: %s", err)
+				ctx.SetStatusCode(fasthttp.StatusBadRequest)
+				return
+			}
+		case req.Action == models.DecInfected:
+			err = s.svc.DecInfected(req.Index, req.Timestamp)
+			if err != nil {
+				logrus.Errorf("PutHandler: DecInfected error: %s", err)
+				ctx.SetStatusCode(fasthttp.StatusBadRequest)
+				return
+			}
+		case req.Action == models.IncHealthy:
+			err = s.svc.IncHealthy(req.Index, req.Timestamp)
+			if err != nil {
+				logrus.Errorf("PutHandler: IncHealthy error: %s", err)
+				ctx.SetStatusCode(fasthttp.StatusBadRequest)
+				return
+			}
+		case req.Action == models.DecHealthy:
+			err = s.svc.DecHealthy(req.Index, req.Timestamp)
+			if err != nil {
+				logrus.Errorf("PutHandler: DecHealthy error: %s", err)
+				ctx.SetStatusCode(fasthttp.StatusBadRequest)
+				return
+			}
+		default:
+			logrus.Errorf("PutHandler: invalid action code: %s", err)
 			ctx.SetStatusCode(fasthttp.StatusBadRequest)
 			return
 		}
-	case req.Action == models.DecInfected:
-		err = s.svc.DecInfected(req.Index, req.Timestamp)
-		if err != nil {
-			logrus.Errorf("PutHandler: DecInfected error: %s", err)
-			ctx.SetStatusCode(fasthttp.StatusBadRequest)
-			return
-		}
-	case req.Action == models.IncHealthy:
-		err = s.svc.IncHealthy(req.Index, req.Timestamp)
-		if err != nil {
-			logrus.Errorf("PutHandler: IncHealthy error: %s", err)
-			ctx.SetStatusCode(fasthttp.StatusBadRequest)
-			return
-		}
-	case req.Action == models.DecHealthy:
-		err = s.svc.DecHealthy(req.Index, req.Timestamp)
-		if err != nil {
-			logrus.Errorf("PutHandler: DecHealthy error: %s", err)
-			ctx.SetStatusCode(fasthttp.StatusBadRequest)
-			return
-		}
-	default:
-		logrus.Errorf("PutHandler: invalid action code: %s", err)
-		ctx.SetStatusCode(fasthttp.StatusBadRequest)
-		return
 	}
 	ctx.SetStatusCode(fasthttp.StatusOK)
 }
