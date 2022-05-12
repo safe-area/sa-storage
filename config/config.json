@@ -1,7 +1,13 @@
 {
   "port": ":8080",
   "storage": {
-    "ttl": 7,
+    "ttl": 432000,
     "dir": "hex_data"
-  }
+  },
+  "nats": {
+    "urls": [
+      "nats:4222"
+    ]
+  },
+  "shard_name": "DEFAULT"
 }

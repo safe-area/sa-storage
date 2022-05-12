@@ -9,6 +9,10 @@ import (
 type Config struct {
 	Port    string        `json:"port"`
 	Storage StorageConfig `json:"storage"`
+	NATS    struct {
+		URLs []string `json:"urls"`
+	} `json:"nats"`
+	ShardName string `json:"shard_name"`
 }
 
 type StorageConfig struct {

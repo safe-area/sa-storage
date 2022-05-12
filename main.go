@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/safe-area/sa-storage/config"
 	"github.com/safe-area/sa-storage/internal/api"
+	"github.com/safe-area/sa-storage/internal/nats_provider"
 	"github.com/safe-area/sa-storage/internal/service"
 	"github.com/sirupsen/logrus"
 	"os"
@@ -16,7 +17,13 @@ func main() {
 		logrus.Fatalf("parse config error: %v", err)
 	}
 
-	svc := service.New(cfg)
+	provider := nats_provider.New(cfg.NATS.URLs)
+	err = provider.Open()
+	if err != nil {
+		logrus.Fatalf("open nats conn error: %v", err)
+	}
+
+	svc := service.New(cfg, provider)
 	err = svc.Init()
 	if err != nil {
 		logrus.Fatalf("service init error: %v", err)
